@@ -1,6 +1,7 @@
 # MS Apriori implementation
 
 import sys
+import math
 
 transactions = []
 cannot_constraint = []
@@ -51,7 +52,6 @@ def calc_support(item, transactions):
     return total/len(transactions)
 
 def init_pass(M, transactions):
-    global L
     global F
     L = []
     F1 = []
@@ -67,34 +67,82 @@ def init_pass(M, transactions):
                 if sup >= float(mis[item]):
                     F1.append(item)
                 i = item
-                print('i >>>',i,' mis(i) >> ' , mis[i])
+                #print('i >>>',i,' mis(i) >> ' , mis[i])
             else:
-                print(item,' sup >>>',calc_support(item,transactions))
+                #print(item,' sup >>>',calc_support(item,transactions))
                 sup = calc_support(item,transactions)
                 if sup >= float(mis[i]):
                     L.append(item)
                 if sup >= float(mis[item]):
                     F1.append(item)
 
-    print('L >>>>',L)
-
+    #print('L >>>>',L)
     F.append(F1)
-    print('F >>>>', F)
+    #print('F >>>>', F)
+    return L
+
+
+def candidate_2_gen(L):
+    C2 = []
+    for item in L:
+        if calc_support(item,transactions) >= float(mis[item]):
+            for i in range(L.index(item)+1, len(L)):
+                sup_i = calc_support(L[i], transactions)
+                sup_item = calc_support(item, transactions)
+                if (sup_i >= float(mis[item])) and (math.fabs(sup_i-sup_item) <= float(sdc_val)):
+                    C2.append([item, L[i]])
+    #print("C2", C2)
+    return C2
+
+
+def candidate_gen(Fk_1):
+    Ck = []
+
+
+def ms_apriori():
+    Ck = []
+    M = [x[0] for x in sorted(mis.items(), key = lambda x: x[1])]
+    L = init_pass(M,transactions)
+    #print(len(F[1]))
+
+    for k in range(1, len(mis)):
+        if k > len(F) or len(F[k-1]) is 0:
+            break;
+        else:
+            #print(k)
+            if k == 1:
+                Ck = candidate_2_gen(L)
+                #F.append(C2)
+                #print(F)
+            else:
+                return
+                #Ck = candidate_gen(F[k-1])
+
+            Fk = []
+            for c in Ck:
+                count = 0
+                tail_count = 0
+                for transaction in transactions:
+                    if set(c).issubset(set(transaction)):
+                        count += 1
+
+                    if set(c[1:]).issubset(set(transaction)):
+                        tail_count += 1
+
+                if (count/len(transactions)) >= float(mis[c[0]]):
+                    Fk.append(c)
+
+            F.append(Fk)
+            print('F>>',F)
+
 
 def main():
     input()
     #print('SDC >>' + sdc_val)
     #print('Cannot constraints >>', cannot_constraint)
     #print('Must have >>', must_have)
-    M = [x[0] for x in sorted(mis.items(), key = lambda x: x[1])]
-    init_pass(M,transactions)
-    #print(M)
+    ms_apriori()
 
-    gen = (k for k in range(2,len(mis)) if F[k-1] is not len(F[k-1]) is not 0)
-    for k in gen:
-        print(k)
-        #if k == 2:
-            #candidate_2_gen()
 
 if __name__ == '__main__':
     main()
