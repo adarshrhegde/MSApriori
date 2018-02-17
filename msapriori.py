@@ -2,6 +2,7 @@
 
 import sys
 import math
+import itertools
 
 transactions = []
 cannot_constraint = []
@@ -97,7 +98,24 @@ def candidate_2_gen(L):
 
 def candidate_gen(Fk_1):
     Ck = []
+    pairs = itertools.combinations(Fk_1, 2)
+    for pair in pairs:
+        f1 = pair[0]
+        f2 = pair[1]
+        if f1[0] == f2[0]:
+            if float(f1[-1]) < float(f2[-1]) and math.fabs(calc_support(f1[-1],transactions) - calc_support(f2[-1],transactions)) <= float(sdc_val):
+                c = list(f1)
+                c.append(f2[-1])
+                s = itertools.combinations(c,len(c)-1)
+                Ck.append(c)
+                for subset_k_1 in s:
+                    if set(c[0]).issubset(set(subset_k_1)) or (mis[c[2]] == mis[c[1]]):
+                        if list(subset_k_1) not in Fk_1:
+                            Ck.remove(c)
+                            break
 
+
+    return Ck
 
 def ms_apriori():
     Ck = []
@@ -115,8 +133,7 @@ def ms_apriori():
                 #F.append(C2)
                 #print(F)
             else:
-                return
-                #Ck = candidate_gen(F[k-1])
+                Ck = candidate_gen(F[k-1])
 
             Fk = []
             for c in Ck:
@@ -132,16 +149,17 @@ def ms_apriori():
                 if (count/len(transactions)) >= float(mis[c[0]]):
                     Fk.append(c)
 
-            F.append(Fk)
-            print('F>>',F)
-
+            if len(Fk) > 0:
+                F.append(Fk)
+                print('F>>',F)
+    return F[-1]
 
 def main():
     input()
     #print('SDC >>' + sdc_val)
     #print('Cannot constraints >>', cannot_constraint)
     #print('Must have >>', must_have)
-    ms_apriori()
+    print('F>>>>',ms_apriori())
 
 
 if __name__ == '__main__':
