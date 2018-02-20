@@ -64,7 +64,6 @@ def calc_count(item, transactions):
     return total
 
 
-
 def must_have_constraint(Fk):
     if len(must_have) == 0:
         return Fk
@@ -117,8 +116,8 @@ def init_pass(M, transactions):
                 if sup >= float(mis[item]):
                     F1.append(item)
 
-    F1 = must_have_constraint(F1)
-    F1 = cannot_have_constraint(F1)
+    #F1 = must_have_constraint(F1)
+    #F1 = cannot_have_constraint(F1)
     F.append(F1)
     return L
 
@@ -189,9 +188,15 @@ def ms_apriori():
 
 
                 if len(Fk) > 0:
-                    Fk = must_have_constraint(Fk)
-                    Fk = cannot_have_constraint(Fk)
+                    #Fk = must_have_constraint(Fk)
+                    #Fk = cannot_have_constraint(Fk)
                     F.append(Fk)
+
+
+    # applying must have and cannot have constraints
+    for i in range(0,len(F)):
+        F[i] = must_have_constraint(F[i])
+        F[i] = cannot_have_constraint(F[i])
 
     f = open(sys.argv[3],'w')
     for i in range(0,len(F)):
