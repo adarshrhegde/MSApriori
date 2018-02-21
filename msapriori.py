@@ -85,7 +85,8 @@ def cannot_have_constraint(Fk):
     for item in cannot_constraint:
         for item2 in Fk:
             if set(item).issubset(set(item2)):
-                result.append(item2)
+                if item2 not in result :
+                    result.append(item2)
     for item in result:
         Fk.remove(item)
     return Fk
@@ -139,11 +140,14 @@ def candidate_gen(Fk_1):
     for f1 in Fk_1:
         for f2 in Fk_1:
             if f1 != f2:
-                if f1[0] == f2[0]:
-                    if float(f1[-1]) < float(f2[-1]) and math.fabs(
+                if f1[0:-1] == f2[0:-1]:
+                    c = list(f1)
+                    c.append(f2[-1])
+                    q = ['33','17','46']
+                    if len(set(c).intersection(set(q))) is 3:
+                        print(c)
+                    if float(f1[-1]) < float(f2[-1]) and c not in Ck and math.fabs(
                             calc_support(f1[-1], transactions) - calc_support(f2[-1], transactions)) <= float(sdc_val):
-                        c = list(f1)
-                        c.append(f2[-1])
                         s = itertools.combinations(c, len(c) - 1)
                         Ck.append(c)
                         for subset_k_1 in s:
@@ -200,6 +204,8 @@ def ms_apriori():
 
     f = open(sys.argv[3],'w')
     for i in range(0,len(F)):
+        if i != 0 and len(F[i]) == 0:
+            continue
         set1 = {}
         f.write("Frequent " + str(i+1) + "-itemsets\n")
         for item in F[i]:
