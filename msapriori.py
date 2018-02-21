@@ -117,8 +117,6 @@ def init_pass(M, transactions):
                 if sup >= float(mis[item]):
                     F1.append(item)
 
-    #F1 = must_have_constraint(F1)
-    #F1 = cannot_have_constraint(F1)
     F.append(F1)
     return L
 
@@ -143,9 +141,6 @@ def candidate_gen(Fk_1):
                 if f1[0:-1] == f2[0:-1]:
                     c = list(f1)
                     c.append(f2[-1])
-                    q = ['33','17','46']
-                    if len(set(c).intersection(set(q))) is 3:
-                        print(c)
                     if float(f1[-1]) < float(f2[-1]) and c not in Ck and math.fabs(
                             calc_support(f1[-1], transactions) - calc_support(f2[-1], transactions)) <= float(sdc_val):
                         s = itertools.combinations(c, len(c) - 1)
@@ -192,8 +187,6 @@ def ms_apriori():
 
 
                 if len(Fk) > 0:
-                    #Fk = must_have_constraint(Fk)
-                    #Fk = cannot_have_constraint(Fk)
                     F.append(Fk)
 
 
