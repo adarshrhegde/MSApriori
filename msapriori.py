@@ -117,6 +117,8 @@ def init_pass(M, transactions):
                 if sup >= float(mis[item]):
                     F1.append(item)
 
+    #F1 = must_have_constraint(F1)
+    #F1 = cannot_have_constraint(F1)
     F.append(F1)
     return L
 
@@ -146,7 +148,7 @@ def candidate_gen(Fk_1):
                         s = itertools.combinations(c, len(c) - 1)
                         Ck.append(c)
                         for subset_k_1 in s:
-                            if {c[0]}.issubset(set(subset_k_1)) or (mis[c[2]] == mis[c[1]]):
+                            if {c[0]}.issubset(set(subset_k_1)) or (mis[c[1]] == mis[c[0]]):
                                 if list(subset_k_1) not in Fk_1:
                                     Ck.remove(c)
                                     break
@@ -187,6 +189,8 @@ def ms_apriori():
 
 
                 if len(Fk) > 0:
+                    #Fk = must_have_constraint(Fk)
+                    #Fk = cannot_have_constraint(Fk)
                     F.append(Fk)
 
 
@@ -197,7 +201,8 @@ def ms_apriori():
 
     f = open(sys.argv[3],'w')
     for i in range(0,len(F)):
-        if i != 0 and len(F[i]) == 0:
+
+        if len(F[i]) == 0 and i is not 0:
             continue
         set1 = {}
         f.write("Frequent " + str(i+1) + "-itemsets\n")
